@@ -1,15 +1,13 @@
 from flask import Flask, request, jsonify
 import the_2048
 from flask_cors import CORS
+
 app = Flask(__name__)
 CORS(app)
+
 # Initialize the game state
 matrix = the_2048.start_game()
 
-
-def restart_game():
-    global matrix
-    matrix = the_2048.start_game()
 @app.route("/", methods=["GET", "POST"])
 def main():
     global matrix
@@ -44,7 +42,11 @@ def main():
     
     return jsonify(matrix)
 
-
+@app.route("/restart", methods=["POST", "OPTIONS"])  # Allow OPTIONS requests for CORS preflight
+def restart_game():
+    global matrix
+    matrix = the_2048.start_game()
+    return jsonify(matrix)
 
 if __name__ =='__main__':
     app.run(debug=True, host='127.0.0.1', port=5000)
